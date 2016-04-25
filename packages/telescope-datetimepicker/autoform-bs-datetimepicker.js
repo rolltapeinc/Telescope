@@ -1,10 +1,9 @@
 AutoForm.addInputType("bootstrap-datetimepicker", {
   template: "afBootstrapDateTimePicker",
   valueOut: function () {
-    // var val = this.datepicker('getUTCDate');
-    if (!!this.data("DateTimePicker").date()) {
-      var val = this.data("DateTimePicker").date().toDate();
-      // console.log(val)
+    var pickerVal = this && this.data("DateTimePicker") && this.data("DateTimePicker").date();
+    if (!!pickerVal) {
+      var val = pickerVal.toDate();
       return (val instanceof Date) ? val : this.val();
     }
   },
@@ -86,8 +85,15 @@ Template.afBootstrapDateTimePicker.rendered = function () {
 };
 
 Template.afBootstrapDateTimePicker.destroyed = function () {
-  // this.$('input').datepicker('remove');
-  this.$('input').data('DateTimePicker').destroy();
+  var inputElement = this && this.$('input');
+  if (!inputElement) {
+    return;
+  }
+  var picker = inputElement.data && inputElement.data('DateTimePicker');
+  if (!picker) {
+    return;
+  }
+  picker.destroy();
 };
 
 function utcToLocal(utcDate) {
